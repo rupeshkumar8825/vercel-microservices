@@ -4,9 +4,9 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1", 
+    "test": "echo \"Error: no test specified\" && exit 1",
     "build": "npx tsc",
-    "start": "npm run build && nodemon --watch  src --ext ts  --exec node dist/index.js" 
+    "start": "npm run build && nodemon --watch  src --ext ts  --exec ts-node ./src/index.ts"
   },
   "keywords": [],
   "author": "",
@@ -20,5 +20,8 @@
     "nodemon": "^3.0.3",
     "simple-git": "^3.22.0",
     "typescript": "^5.3.3"
+  },
+  "devDependencies": {
+    "ts-node": "^10.9.2"
   }
 }

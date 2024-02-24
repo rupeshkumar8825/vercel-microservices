@@ -2,23 +2,13 @@
 // this function should take the path of the folder whose file names needs to be added into the array 
 // we need the array of files to be able to upload on to the S3 bucket for this purpose 
 // here we may have to use the fs.readdir() for this purpose 
-import fs from 'fs';
+import fs from 'fs/promises';
 
-export const getAllFiles = (currRepoId : string) : string[] => {
+export const getAllFiles = async (currRepoId : string) : Promise<string[]> => {
     const folderName = `./output/${currRepoId}`;
-    
-    // using the fs module for this puropse 
-    let listOfFiles : string[] = [];
-
-    // here we have to pass the callback function for this purpose since this asynchronous function 
-    fs.readdir(folderName, (err, files) => {
-        // using the for loop to iterate over each of the files in the folder for this purpose 
-        files.forEach((currFile : string) => {
-            listOfFiles.push(currFile);
-            console.log(currFile);
-        });
-    })
-
+    console.log("inside the getall files function with currrepoid as  \n", currRepoId);
+    const listOfFiles : string[] = await fs.readdir(folderName);
+    console.log("returning from the function of getAllFiles.");
     // say everything went fine 
     return listOfFiles;
 }
