@@ -3,12 +3,18 @@
 // we need the array of files to be able to upload on to the S3 bucket for this purpose 
 // here we may have to use the fs.readdir() for this purpose 
 import fs from 'fs/promises';
+import path from 'path';
 
-export const getAllFiles = async (currRepoId : string) : Promise<string[]> => {
-    const folderName = `./output/${currRepoId}`;
-    console.log("inside the getall files function with currrepoid as  \n", currRepoId);
-    const listOfFiles : string[] = await fs.readdir(folderName);
-    console.log("returning from the function of getAllFiles.");
+export const getAllFiles = async (currRepoId : string, filePath : string) : Promise<string[]> => {
+    const listOfFiles : string[] = await fs.readdir(filePath, {recursive: true});
+
+ 
+    let listOfFilesAbsolutePath : string[] = [];
+    listOfFilesAbsolutePath = listOfFiles.map((currFile : string) => {
+        return path.join(filePath, currFile);
+    })
+
+    
     // say everything went fine 
-    return listOfFiles;
+    return listOfFilesAbsolutePath;
 }
