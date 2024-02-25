@@ -17,6 +17,7 @@
     "aws-sdk": "^2.1562.0",
     "cors": "^2.8.5",
     "express": "^4.18.2",
+    "junk": "^4.0.1",
     "nodemon": "^3.0.3",
     "simple-git": "^3.22.0",
     "typescript": "^5.3.3"
