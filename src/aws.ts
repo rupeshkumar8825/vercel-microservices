@@ -37,6 +37,7 @@ export const uploadFile = async (fileName : string, localFilePath : string) => {
     fs.readFile(localFilePath,(err, result) => {
         if(err)
         {
+            console.log("filename is : ", fileName, "   localFilePath is : ", localFilePath);
             console.log('some error happened while reaading the file asynchronously', err);
         }
         else
