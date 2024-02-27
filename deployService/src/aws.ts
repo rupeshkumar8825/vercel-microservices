@@ -2,6 +2,9 @@
 import aws, { DirectConnect } from "aws-sdk";
 import path from  "path";
 import fs from "fs/promises";
+import fs2 from "fs";
+import { String } from 'aws-sdk/clients/apigateway';
+
 
 // initializing the s3 object here for this puropse 
 const s3 = new aws.S3({
@@ -99,4 +102,97 @@ export const downloadS3Files = async (filePath : string)  => {
         });
     })
 
+}
+
+
+
+const uploadOnS3 = (result : Buffer, fileName : String) => {
+    return new Promise((resolve, reject) => {
+        s3.upload({
+            Body : result, 
+            Bucket : "vercel-clone", 
+            Key : fileName
+        }, (error, data) => {
+            if(error)
+            {
+                console.log("some error happened which is \n", error);
+            }
+            else{
+                console.log(`File uploaded successfully ${data.Location}`);
+                resolve("");
+            }
+        });
+
+    })
+}
+
+
+
+
+// defining the upload function here for this purpose 
+export const uploadFile = async (fileName : string, localFilePath : string) => {
+    console.log("filename is : ", fileName, "   localFilePath is : ", localFilePath);
+    return new Promise((resolve, reject) => {
+        fs2.readFile(localFilePath,async (err, result) => {
+            if(err)
+            {
+                console.log("filename is : ", fileName, "   localFilePath is : ", localFilePath);
+                console.log('some error happened while reaading the file asynchronously', err);
+                resolve("");
+            }
+            else
+            {
+                await uploadOnS3(result, fileName);
+                resolve("");
+            }
+        });
+
+    })
+    
+
+    // say everything went fine 
+    return;
+
+
+
+}
+
+
+
+export const getAllFiles = async (filePath : string) : Promise<string[]> => {
+    const listOfFiles : string[] = await fs.readdir(filePath, {recursive: true});
+
+ 
+    let listOfFilesAbsolutePath : string[] = [];
+    listOfFilesAbsolutePath = listOfFiles.map((currFile : string) => {
+        return path.join(filePath, currFile);
+    })
+
+
+    // say everything went fine 
+    return listOfFilesAbsolutePath;
+}
+
+
+// the following function to take out the files from the build folder and then it will upload on the S3 for this purpose 
+export const copyBuildFilesToS3 = async (currRepoId : string) =>{
+    // here we have to copy the files for this purpose
+    return new Promise(async (resolve, reject) => {
+        let count : number = 0;
+        let filePath : string = path.join(__dirname, `output/${currRepoId}/build`);
+        const listOfFiles = await getAllFiles(filePath);
+        console.log(listOfFiles.length);
+        listOfFiles.forEach(async (currFile: string) => {
+            // /home/rupesh/Desktop/project/vercel/deployService/src/output/a21c987615ffa13f61ce/build
+            await uploadFile(`build/${currRepoId}/` + currFile.slice(__dirname.length + 35), currFile);
+            count++;
+            console.log("count: " + count + "\n\n\n\n\n\n\n\n\n\n\n\n\n");
+            if(count  == listOfFiles.length)
+            {
+                console.log("resolving the copubuild here ================================================================================================================================================================================= ")
+                resolve("");
+            }
+        })
+
+    }) 
 }

@@ -1,5 +1,5 @@
 import {createClient} from "redis"
-import { downloadS3Files } from "./aws";
+import { copyBuildFilesToS3, downloadS3Files } from "./aws";
 import { buildProject } from "./build";
 
 
@@ -9,7 +9,6 @@ subscriber.connect();
 // here we have to implement this function whose main aim is to poll the queue 
 async function main () 
 {
-    let count = 10;
     while(1)
     {
         // console.log("inside the while loop \n");
@@ -25,9 +24,11 @@ async function main ()
             // now we also have to build this project locally that is on the server 
             await buildProject(response);
             console.log("================================Finished building the code files...==============================");
-            // after it is built we have to then store this on the s3 or r2 bucket for this purpose 
+            // here we have to upload the files to s3 again for this purpose 
+            // here we have to write the same logic to upload the files to s3 for this purpose 
+            await copyBuildFilesToS3(response);
 
-
+            console.log("================================Finished uploading the build files to s3 =================================================================");
         }
 
     }
