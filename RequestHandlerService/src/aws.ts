@@ -19,13 +19,13 @@ const getFileFromServer = (filePath : string, deploymentId : string) => {
         }, (err, response) => {
             if(err)
             {
-                console.log("some error happened while accessing the file from the S3 bucket", err);
+                // console.log("some error happened while accessing the file from the S3 bucket", err);
                 resolve(err);
             }
             else
             {
-                console.log("the response from the S3 bucket is as follows \n", response);
-                resolve(response)
+                // console.log("the response from the S3 bucket is as follows \n", response);
+                resolve(response.Body)
             }
         });
 
