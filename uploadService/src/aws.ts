@@ -13,39 +13,48 @@ const s3 = new aws.S3({
 
 
 const uploadOnS3 = (result : Buffer, fileName : String) => {
-    s3.upload({
-        Body : result, 
-        Bucket : "vercel-clone", 
-        Key : fileName
-    }, (error, data) => {
-        if(error)
-        {
-            console.log("some error happened which is \n", error);
-        }
-        else{
-            console.log(`File uploaded successfully ${data.Location}`);
-        }
-    });
+    return new Promise((resolve, reject) => {
+        s3.upload({
+            Body : result, 
+            Bucket : "vercel-clone", 
+            Key : fileName
+        }, (error, data) => {
+            if(error)
+            {
+                console.log("some error happened which is \n", error);
+                resolve(error);
+            }
+            else{
+                console.log(`File uploaded successfully ${data.Location}`);
+                resolve(data.Location);
+            }
+        });
+
+    })
 }
 
 
 
 // defining the upload function here for this purpose 
 export const uploadFile = async (fileName : string, localFilePath : string) => {
-    console.log("filename is : ", fileName, "   localFilePath is : ", localFilePath);
-    const fileContent = 
-    fs.readFile(localFilePath,(err, result) => {
-        if(err)
-        {
-            console.log("filename is : ", fileName, "   localFilePath is : ", localFilePath);
-            console.log('some error happened while reaading the file asynchronously', err);
-        }
-        else
-        {
-            uploadOnS3(result, fileName)
-        }
-    });
-    
+    // console.log("filename is : ", fileName, "   localFilePath is : ", localFilePath);
+    return new Promise((resolve, reject) => {
+        fs.readFile(localFilePath,async (err, result) => {
+            if(err)
+            {
+                console.log("filename is : ", fileName, "   localFilePath is : ", localFilePath);
+                console.log('some error happened while reaading the file asynchronously', err);
+                resolve(err);
+            }
+            else
+            {
+                await uploadOnS3(result, fileName)
+                resolve(result)
+            }
+        });
+        
+
+    })
 
     // say everything went fine 
     return;

@@ -30,9 +30,17 @@ app.post("/deploy", async (req : Request, res : Response) => {
 
     const listOfFiles = await getAllFiles(filePath);
     console.log(listOfFiles.length);
-    listOfFiles.forEach((currFile: string) => {
-        uploadFile(currFile.slice(__dirname.length + 1), currFile);
-    })
+    // for(let currFile in listOfFiles)
+    // {
+    //     await uploadFile(currFile.slice(__dirname.length + 1), currFile);
+    // }
+    await Promise.all(listOfFiles.map(async (currFile, index) => {
+        const contents = await uploadFile(currFile.slice(__dirname.length + 1), currFile);
+        console.log("this is the result for the content and index as \n\n\n\n", contents, index)
+    }));
+    // listOfFiles.forEach(async (currFile: string) => {
+    //     await uploadFile(currFile.slice(__dirname.length + 1), currFile);
+    // })
     
 
     // now here we have to put the id of this github into the redis queue for this purpose 
