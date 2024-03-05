@@ -6,6 +6,10 @@ import { buildProject } from "./build";
 const subscriber = createClient();
 subscriber.connect();
 
+const publisher = createClient();
+publisher.connect();
+
+
 // here we have to implement this function whose main aim is to poll the queue 
 async function main () 
 {
@@ -29,6 +33,10 @@ async function main ()
             await copyBuildFilesToS3(response);
 
             console.log("================================Finished uploading the build files to s3 =================================================================");
+
+            // here we have to set the status of the current state of deployment as deployed for this purpose 
+            // since we are using the redis database hence we will use this as database to store the values inside for tis purpose 
+            publisher.hSet("status", response, "deployed");
         }
 
     }

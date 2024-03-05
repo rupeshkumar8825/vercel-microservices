@@ -12,6 +12,11 @@ import { createClient } from 'redis';
 const publisherService = createClient();
 publisherService.connect();
 
+
+const subscriber = createClient();
+subscriber.connect();
+
+
 const app = express();
 app.use(cors());
 app.use(express.json());
@@ -46,10 +51,25 @@ app.post("/deploy", async (req : Request, res : Response) => {
     // now here we have to put the id of this github into the redis queue for this purpose 
     publisherService.lPush("build-queue", currRepoId);
 
+    // setting the status of this particular deployment as "UPLOADED" as this is not yet deployed hence we will store this information inside the REDIS itself 
+    // do note that we can also use the redis as the database but it is not recommended for this purpose 
+    publisherService.hSet("status", currRepoId, "uploaded");
     console.log("successfully pushed the current id on to the redis server for this purpose\n");
 
     res.json({id : currRepoId});
 
+});
+
+
+
+// endpoint  to check the status of the current deployment for this purpose 
+app.get("/status", async (req : Request, res : Response) => {
+    const id = req.query.id;
+
+    const statusResponse = await subscriber.hGet("status", id as string);
+    res.json({
+        status : statusResponse
+    });
 })
 
 
