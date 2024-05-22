@@ -1,7 +1,3 @@
-// here we have to write the main logic for the request handler for this purpose 
-
-
-console.log("this is index.ts for request handler for this purpose \n");
 import express, { Request, Response, request } from "express";
 import getFileFromServer from "./aws";
 
@@ -10,8 +6,6 @@ const app = express();
 
 
 app.get("/*", async (req : Request,res : Response) => {
-    console.log("this endpoint was hit for this purpose \n");
-    // now fetching the value of the hostname 
     const url = req.hostname;
     console.log("host is \n", url);
 

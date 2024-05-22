@@ -22,7 +22,9 @@ app.use(cors());
 app.use(express.json());
 
 
-
+/*
+  Endpoint for deploying the project to the cloudFront R2 using the AWS-SDK  
+ */
 app.post("/deploy", async (req : Request, res : Response) => {
     const repoUrl = req.body.repoUrl;
 
@@ -35,10 +37,7 @@ app.post("/deploy", async (req : Request, res : Response) => {
 
     const listOfFiles = await getAllFiles(filePath);
     console.log(listOfFiles.length);
-    // for(let currFile in listOfFiles)
-    // {
-    //     await uploadFile(currFile.slice(__dirname.length + 1), currFile);
-    // }
+    
     await Promise.all(listOfFiles.map(async (currFile, index) => {
         const contents = await uploadFile(currFile.slice(__dirname.length + 1), currFile);
         console.log("this is the result for the content and index as \n\n\n\n", contents, index)

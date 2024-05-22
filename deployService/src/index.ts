@@ -9,6 +9,15 @@ subscriber.connect();
 const publisher = createClient();
 publisher.connect();
 
+const sleepForSomeTime = async (sleepTime : number) => {
+    // sleeping for some time
+    return new Promise((resolve, reject) => {
+        setTimeout(() => {
+            resolve("");
+        }, sleepTime)
+    })
+}
+
 
 // here we have to implement this function whose main aim is to poll the queue 
 async function main () 
@@ -38,6 +47,8 @@ async function main ()
             // since we are using the redis database hence we will use this as database to store the values inside for tis purpose 
             publisher.hSet("status", response, "deployed");
         }
+
+        await sleepForSomeTime(5000);
 
     }
 }

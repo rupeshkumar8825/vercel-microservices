@@ -27,6 +27,7 @@ export function App() {
     console.log("the response from the server is as follows \n");
     console.log("the URL id is as follows \n", response.data.id);
     setUploadId(response.data.id);
+    setUploading(true);
 
 
     // start the interval here for this purpose to keep polling the values to the end of 
@@ -39,6 +40,7 @@ export function App() {
         // then we have to clear this interval and make the deployed status complete 
         clearInterval(interval);
         setDeployed(true);
+        setUploading(false);
       }
     }, 3000);
     
